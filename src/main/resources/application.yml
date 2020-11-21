@@ -1,1 +1,15 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: gitlab-merge-request
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/db_gitlab
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: ENC(8R3d+DFfhCITYzhEoE1xxCAIzZAnel57tmhgOay82ausQmt5X9675VUeGGGWNl+h)
 
+# mybatis 配置
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+  base-packages: com.tuituidan.gmr.mybatis.mapper

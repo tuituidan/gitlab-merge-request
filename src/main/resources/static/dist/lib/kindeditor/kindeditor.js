@@ -6306,7 +6306,7 @@
                     if(attrs.href !== undefined) {
                         return full;
                     }
-                    return '<img class="ke-anchor" src="' + self.themesPath + 'common/anchor.gif" data-ke-name="' + escape(attrs.name) + '" />';
+                    return '<img class="ke-anchor" src=' + self.themesPath + '"../../../../templates/common/anchor.gif" data-ke-name="' + escape(attrs.name) + '" />';
                 })
                 .replace(/<script([^>]*)>([\s\S]*?)<\/script>/ig, function(full, attr, code) {
                     return '<div class="ke-script" data-ke-script-attr="' + escape(attr) + '">' + escape(code) + '</div>';
