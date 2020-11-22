@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * User.
+ * Developer.
  *
  * @author tuituidan
  * @version 1.0
@@ -23,8 +23,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(name = "T_USER", schema = "DB_GITLAB")
-public class User implements Serializable, BaseEntity<User> {
+@Table(name = "T_DEVELOPER", schema = "DB_GITLAB")
+public class Developer implements Serializable, BaseEntity<Developer> {
     private static final long serialVersionUID = -960213583721959880L;
 
     @Id
@@ -46,17 +46,20 @@ public class User implements Serializable, BaseEntity<User> {
     @Column(name = "C_GITLAB_LOGINID")
     private String gitlabLoginId;
 
+    @Column(name = "C_PRIVATE_TOKEN")
+    private String privateToken;
+
     @Column(name = "N_PROJECT_COUNT")
-    private String projectCount;
+    private Integer projectCount;
 
     @Column(name = "N_MERGE_REQUEST_COUNT")
-    private String mergeRequestCount;
+    private Integer mergeRequestCount;
 
     @Column(name = "N_DISCUSSION_COUNT")
-    private String discussionCount;
+    private Integer discussionCount;
 
     @Column(name = "N_NODISCUSSION_COUNT")
-    private String nodiscussionCount;
+    private Integer nodiscussionCount;
 
     @Column(name = "DT_CREATE_TIME")
     private LocalDateTime createTime;

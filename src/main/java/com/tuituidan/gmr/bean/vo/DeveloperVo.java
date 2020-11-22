@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * UserVo.
+ * DeveloperVo.
  *
  * @author tuituidan
  * @version 1.0
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserVo {
+public class DeveloperVo {
 
     private String id;
 

@@ -46,12 +46,6 @@ public class Project implements Serializable, BaseEntity<Project> {
     @Column(name = "C_LOGINID")
     private String loginId;
 
-    @Column(name = "C_PASSWORD")
-    private String password;
-
-    @Column(name = "C_PRIVATE_TOKEN")
-    private String privateToken;
-
     @Column(name = "ARR_DEVELOPERS")
     @ColumnType(typeHandler = ArrayTypeHandler.class)
     private String[] developers;

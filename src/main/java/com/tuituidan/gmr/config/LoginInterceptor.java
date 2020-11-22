@@ -1,7 +1,7 @@
 package com.tuituidan.gmr.config;
 
 import com.tuituidan.gmr.consts.Consts;
-import com.tuituidan.gmr.service.UserService;
+import com.tuituidan.gmr.service.DeveloperService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Resource
-    private UserService userService;
+    private DeveloperService developerService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -43,7 +43,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         String userId = IOUtils.toString(Base64Utils.decodeFromString(cookie.getValue()),
                 StandardCharsets.UTF_8.name());
-        request.setAttribute("userInfo", userService.getUserInfo(userId));
+        request.setAttribute("userInfo", developerService.getDeveloper(userId));
         return true;
     }
 }

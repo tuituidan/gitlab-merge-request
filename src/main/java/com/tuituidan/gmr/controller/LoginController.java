@@ -1,9 +1,12 @@
 package com.tuituidan.gmr.controller;
 
+import com.tuituidan.gmr.bean.entity.Developer;
 import com.tuituidan.gmr.consts.Consts;
+import com.tuituidan.gmr.service.DeveloperService;
 
 import java.nio.charset.StandardCharsets;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,11 +28,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(Consts.API_V1)
 public class LoginController {
 
+    @Resource
+    private DeveloperService developerService;
+
     @PostMapping("/login")
     public String login(HttpServletResponse response, HttpServletRequest request,
-                        @RequestParam(value = "username", required = false) String user) {
+                        @RequestParam(value = "username") String loginId,
+                        @RequestParam(value = "password") String password) {
+
+        Developer developer = developerService.getDeveloper(loginId, password);
         Cookie cookie = new Cookie(Consts.AUTH_HEAD_KEY,
-                Base64Utils.encodeToString("00000000000000000000000000000000".getBytes(StandardCharsets.UTF_8)));
+                Base64Utils.encodeToString(developer.getId().getBytes(StandardCharsets.UTF_8)));
         // 浏览器关闭失效
         cookie.setMaxAge(-1);
         cookie.setDomain(request.getServerName());
