@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -26,6 +27,9 @@ public class WebAppConfig implements WebMvcConfigurer {
     @Resource
     private LoginInterceptor loginInterceptor;
 
+    @Value(value = "#{'${non-require-login}'.split(',')}")
+    private String[] nonNeedLoginPath;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         for (Map.Entry<String, String> item : ResourceExtUtils.MVC_VIEW.getDataMap().entrySet()) {
@@ -36,8 +40,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
-                .excludePathPatterns("/assets/**", "/favicon.ico", "/error/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(nonNeedLoginPath);
     }
 
 

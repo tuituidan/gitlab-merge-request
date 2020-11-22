@@ -1,12 +1,9 @@
 package com.tuituidan.gmr.controller;
 
-import com.tuituidan.gmr.bean.entity.Project;
+import com.tuituidan.gmr.bean.dto.ProjectDto;
 import com.tuituidan.gmr.bean.vo.ProjectVo;
 import com.tuituidan.gmr.consts.Consts;
 import com.tuituidan.gmr.service.ProjectService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 import java.util.List;
 
@@ -32,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(Consts.API_V1)
-@Api(tags = "项目控制器")
 public class ProjectController {
 
     @Resource
@@ -44,20 +40,19 @@ public class ProjectController {
      * @param userName 登录用户
      * @return List
      */
-    @ApiOperation("根据登录人查询列表")
     @GetMapping("/{username}/projects")
     public ResponseEntity<List<ProjectVo>> selectByUser(@PathVariable("username") String userName) {
         return ResponseEntity.ok(projectService.selectByUser(userName));
     }
 
     @PostMapping("/projects")
-    public ResponseEntity<Void> create(@RequestBody Project project) {
+    public ResponseEntity<Void> create(@RequestBody ProjectDto project) {
         projectService.save(project);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/projects/{id}")
-    public ResponseEntity<Void> update(@PathVariable("id") String id, @RequestBody Project project) {
+    public ResponseEntity<Void> update(@PathVariable("id") String id, @RequestBody ProjectDto project) {
         project.setId(id);
         projectService.save(project);
         return ResponseEntity.noContent().build();

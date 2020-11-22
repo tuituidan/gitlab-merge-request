@@ -18,4 +18,9 @@ public class Consts {
      */
     public static final String API_V1 = "/api/v1";
 
+    /**
+     * AUTH_HEAD_KEY.
+     */
+    public static final String AUTH_HEAD_KEY = "Authorization";
+
 }

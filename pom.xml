@@ -37,11 +37,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
-        </dependency>
         <!-- 数据库相关 -->
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
