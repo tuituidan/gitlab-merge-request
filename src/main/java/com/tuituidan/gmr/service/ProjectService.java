@@ -1,15 +1,16 @@
 package com.tuituidan.gmr.service;
 
-import com.tuituidan.gmr.bean.entity.User;
+import com.tuituidan.gmr.bean.dto.ProjectDto;
+import com.tuituidan.gmr.bean.entity.Project;
 import com.tuituidan.gmr.bean.vo.ProjectVo;
 import com.tuituidan.gmr.mybatis.mapper.ProjectMapper;
-import com.tuituidan.gmr.mybatis.mapper.UserMapper;
+import com.tuituidan.gmr.util.BeanExtUtils;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,9 +26,6 @@ public class ProjectService {
     @Resource
     private ProjectMapper projectMapper;
 
-    @Resource
-    private UserMapper userMapper;
-
     /**
      * 获取当前登录人所属项目集合.
      *
@@ -38,10 +36,28 @@ public class ProjectService {
         return projectMapper.selectByUser(username);
     }
 
+    /**
+     * 保存.
+     *
+     * @param projectDto projectDto
+     */
+    public void save(ProjectDto projectDto) {
+        Project project = BeanExtUtils.convert(projectDto, Project.class);
+        if (StringUtils.isBlank(project.getId())) {
+            projectMapper.insert(project);
+        } else {
+            projectMapper.updateByPrimaryKeySelective(project);
+        }
+    }
 
-    @PostConstruct
-    public void save() {
-        userMapper.insert(new User().setLoginId("zhujunhan").setName("朱军函").setGitlabLoginId("zhujunhan"));
+
+    /**
+     * delete.
+     *
+     * @param id id
+     */
+    public void delete(String id) {
+        projectMapper.deleteByPrimaryKey(id);
     }
 
 }

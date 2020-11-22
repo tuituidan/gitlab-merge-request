@@ -1,7 +1,7 @@
 package com.tuituidan.gmr.mybatis;
 
 import com.tuituidan.gmr.bean.entity.BaseEntity;
-import com.tuituidan.gmr.util.StrExtUtils;
+import com.tuituidan.gmr.util.StringExtUtils;
 
 import java.time.LocalDateTime;
 import java.util.Properties;
@@ -34,7 +34,7 @@ public class MybatisInterceptor implements Interceptor {
             BaseEntity<?> entity = (BaseEntity<?>) obj;
             switch (mappedStatement.getSqlCommandType()) {
                 case INSERT:
-                    entity.setId(StrExtUtils.getUuid());
+                    entity.setId(StringExtUtils.getUuid());
                     entity.setCreateTime(LocalDateTime.now());
                     entity.setUpdateTime(LocalDateTime.now());
                     break;
