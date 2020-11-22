@@ -1,5 +1,7 @@
 package com.tuituidan.gmr.controller;
 
+import com.tuituidan.gmr.bean.entity.User;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,23 +17,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class IndexController {
 
 
+    /**
+     * 首页.
+     *
+     * @param modelMap modelMap
+     * @return String
+     */
     @GetMapping({"/", "index.html"})
     public String index(ModelMap modelMap) {
-
+        modelMap.put("userInfo", new User().setName("朱军函"));
         return "index";
     }
-
-    @GetMapping("/layout")
-    public String layout() {
-
-        return "layout";
-    }
-
-    @GetMapping("/list")
-    public String list() {
-
-        return "list";
-    }
-
-
 }

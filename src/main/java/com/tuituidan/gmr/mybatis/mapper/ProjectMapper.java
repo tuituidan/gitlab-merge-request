@@ -18,11 +18,11 @@ import tk.mybatis.mapper.common.BaseMapper;
 public interface ProjectMapper extends BaseMapper<Project> {
 
     /**
-     * selectByCreator.
+     * selectByUser.
      *
      * @param username username
      * @return List
      */
-    List<ProjectVo> selectByCreator(@Param("username") String username);
+    List<ProjectVo> selectByUser(@Param("username") String username);
 
 }

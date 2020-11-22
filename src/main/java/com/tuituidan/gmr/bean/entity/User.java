@@ -1,7 +1,5 @@
 package com.tuituidan.gmr.bean.entity;
 
-import com.tuituidan.gmr.mybatis.typehandler.ArrayTypeHandler;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,48 +11,52 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import tk.mybatis.mapper.annotation.ColumnType;
 
 /**
- * Project.
+ * User.
  *
  * @author tuituidan
  * @version 1.0
- * @date 2020/11/21
+ * @date 2020/11/22
  */
 @Entity
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(name = "T_PROJECT", schema = "DB_GITLAB")
-public class Project implements Serializable, BaseEntity<Project> {
+@Table(name = "T_USER", schema = "DB_GITLAB")
+public class User implements Serializable, BaseEntity<User> {
+    private static final long serialVersionUID = -960213583721959880L;
 
-    private static final long serialVersionUID = -510677508809302821L;
     @Id
     @Column(name = "C_ID")
     private String id;
 
-    @Column(name = "N_PROJECT_ID")
-    private Integer projectId;
-
-    @Column(name = "C_PROJECT_NAME")
-    private String projectName;
-
-    @Column(name = "C_PROJECT_DESC")
-    private String projectDesc;
-
     @Column(name = "C_LOGINID")
     private String loginId;
+
+    @Column(name = "C_NAME")
+    private String name;
 
     @Column(name = "C_PASSWORD")
     private String password;
 
-    @Column(name = "C_PRIVATE_TOKEN")
-    private String privateToken;
+    @Column(name = "C_AVATAR_URL")
+    private String avatarUrl;
 
-    @Column(name = "ARR_DEVELOPERS")
-    @ColumnType(typeHandler = ArrayTypeHandler.class)
-    private String[] developers;
+    @Column(name = "C_GITLAB_LOGINID")
+    private String gitlabLoginId;
+
+    @Column(name = "N_PROJECT_COUNT")
+    private String projectCount;
+
+    @Column(name = "N_MERGE_REQUEST_COUNT")
+    private String mergeRequestCount;
+
+    @Column(name = "N_DISCUSSION_COUNT")
+    private String discussionCount;
+
+    @Column(name = "N_NODISCUSSION_COUNT")
+    private String nodiscussionCount;
 
     @Column(name = "DT_CREATE_TIME")
     private LocalDateTime createTime;

@@ -1,5 +1,9 @@
 package com.tuituidan.gmr.controller;
 
+import com.tuituidan.gmr.service.ProjectService;
+
+import javax.annotation.Resource;
+
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,5 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ProjectController {
+
+    @Resource
+    private ProjectService projectService;
+
+
 
 }
