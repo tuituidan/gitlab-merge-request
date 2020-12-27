@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="dashboard">
+    <template id="page-dashboard">
+        <Row>
+            <i-col span="5">
+                <Card class="dashboard-card bg-info">
+                    <Row>
+                        <i-col span="8" class="card-icon">
+                            <Icon type="md-cube" size="56" color="white"></Icon>
+                        </i-col>
+                        <i-col span="12" class="card-text">
+                            <div>项目数</div>
+                            <div th:text="${userInfo.projectCount}+'个'"></div>
+                        </i-col>
+                    </Row>
+                </Card>
+            </i-col>
+            <i-col span="5" offset="1">
+                <Card class="dashboard-card bg-primary">
+                    <Row>
+                        <i-col span="8" class="card-icon">
+                            <Icon type="md-git-pull-request" size="56" color="white"></Icon>
+                        </i-col>
+                        <i-col span="12" class="card-text">
+                            <div>合并请求数</div>
+                            <div th:text="${userInfo.mergeRequestCount}+'个'"></div>
+                        </i-col>
+                    </Row>
+                </Card>
+            </i-col>
+            <i-col span="5" offset="1">
+                <Card class="dashboard-card bg-error">
+                    <Row>
+                        <i-col span="8" class="card-icon">
+                            <Icon type="ios-bug" size="56" color="white"></Icon>
+                        </i-col>
+                        <i-col span="12" class="card-text">
+                            <div>问题数</div>
+                            <div th:text="${userInfo.discussionCount}+'个'"></div>
+                        </i-col>
+                    </Row>
+                </Card>
+            </i-col>
+            <i-col span="5" offset="1">
+                <Card class="dashboard-card bg-success">
+                    <Row>
+                        <i-col span="8" class="card-icon">
+                            <Icon type="md-checkmark-circle" size="56" color="white"></Icon>
+                        </i-col>
+                        <i-col span="12" class="card-text">
+                            <div>无问题分支数</div>
+                            <div th:text="${userInfo.nodiscussionCount}+'个'"></div>
+                        </i-col>
+                    </Row>
+                </Card>
+            </i-col>
+        </Row>
+    </template>
+    <script type="text/javascript">
+        Vue.component('dashboard', {
+            template: '#page-dashboard'
+        });
+    </script>
+</div>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="merge-requests">
+    <template id="page-merge-requests">
+        <div>
+            <div class="search-panel">
+                <div class="panel-left">
+
+                </div>
+                <div class="panel-right">
+                    <i-button type="success"
+                              icon="md-download"
+                              :loading="pullLoading"
+                              @click="pullMergeRequest()">拉取合并请求
+                    </i-button>
+                    <i-button type="primary"
+                              icon="logo-markdown"
+                              :loading="exportLoading"
+                              @click="exportMarkdown()">导出问题
+                    </i-button>
+                </div>
+            </div>
+            <div class="table-panel">
+                <i-table border stripe :columns="table.columns" :data="table.datas"
+                         @on-selection-change="selectChange">
+                    <template slot-scope="{ row, index }" slot="action">
+                        <i-button type="primary" size="small" @click="window.open(row.webUrl)">查看</i-button>
+                    </template>
+                </i-table>
+            </div>
+            <div class="page-panel">
+                <Page :current="page.pageIndex" :total="page.total" show-total @on-change="pageChange"/>
+            </div>
+        </div>
+    </template>
+    <script type="text/javascript" th:inline="javascript">
+        const projectId = /*[[${projectInfo.id}]]*/ 0;
+        Vue.component('merge-requests', {
+            template: '#page-merge-requests',
+            data() {
+                return {
+                    pullLoading: false,
+                    exportLoading: false,
+                    page: {
+                        pageSize: 10,
+                        pageIndex: 1,
+                        total: 0,
+                        sortBy: '-mergedTime'
+                    },
+                    table: {
+                        selections: [],
+                        columns: [{
+                            type: 'selection',
+                            width: 66,
+                            align: 'center'
+                        }, {
+                            title: '序号',
+                            type: 'index',
+                            width: 66,
+                            align: 'center'
+                        }, {
+                            title: '分支名',
+                            key: 'sourceBranch',
+                            tooltip: true
+                        }, {
+                            title: '作者',
+                            key: 'authorName'
+                        }, {
+                            title: '问题数',
+                            key: 'discussionCount'
+                        }, {
+                            title: '修改文件数',
+                            key: 'changeFiles'
+                        }, {
+                            title: '代码变更行数',
+                            key: 'changeLines'
+                        }, {
+                            title: '新增代码行数',
+                            key: 'addLines'
+                        }, {
+                            title: '删除代码行数',
+                            key: 'deleteLines'
+                        }, {
+                            title: '合并时间',
+                            key: 'mergedTime',
+                            render: (h, params) => {
+                                return h("span", params.row.mergedTime);
+                            }
+                        },{
+                            title: '操作',
+                            slot: 'action',
+                            width: 100,
+                            align: 'center'
+                        }],
+                        datas: []
+                    }
+                }
+            },
+            mounted() {
+                this.loadDatas();
+            },
+            methods: {
+                loadDatas() {
+                    this.$http.get(`/api/v1/projects/${projectId}/merge-request`, {params: {...this.page}})
+                        .then(res => {
+                            this.page.total = res.data.totalElements;
+                            this.table.datas = res.data.content;
+                        })
+                        .catch(err => {
+                            this.$notice.err(err.response.data);
+                        });
+                },
+                pullMergeRequest() {
+                    this.pullLoading = true;
+                    this.$http.get(`/api/v1/projects/${projectId}/merge-request/actions/pull`)
+                        .then(res => {
+                            this.$notice.suc('拉取成功');
+                            this.loadDatas();
+                        })
+                        .catch(err => {
+                            this.$notice.err(err.response.data);
+                        })
+                        .finally(() => {
+                            this.pullLoading = false;
+                        });
+                },
+                pageChange(pageIndex) {
+                    this.page.pageIndex = pageIndex;
+                    this.loadDatas();
+                },
+                selectChange(selections) {
+                    this.table.selections = selections;
+                },
+                exportMarkdown() {
+                    if (this.table.selections.length <= 0) {
+                        this.$notice.warn('请勾选要导出问题的分支');
+                        return;
+                    }
+                    if (this.table.selections.findIndex(item => item.discussionCount <= 0) >= 0) {
+                        this.$notice.warn('只能选择问题数大于0的分支进行导出');
+                        return;
+                    }
+                    this.exportLoading = true;
+                    const params = this.table.selections.map(item => `mergeIds=${item.mergeId}`).join("&")
+                    this.$http.get(`/api/v1/projects/${projectId}/merge-request/discussion?${params}`)
+                        .then(() => {
+                            this.$notice.suc('success');
+                        })
+                        .catch(err => {
+                            this.$notice.err(err.response.data);
+                        })
+                        .finally(() => {
+                            this.exportLoading = false;
+                        });
+                }
+            }
+        })
+    </script>
+</div>
+</html>

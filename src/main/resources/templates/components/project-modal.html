@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="project-modal">
+    <template id="project-modal">
+        <Modal v-model="show"
+               :width="700"
+               :title="edit?'编辑项目':'添加项目'"
+               :loading="loading"
+               :mask-closable="false"
+               @on-ok="save">
+            <i-form ref="tableForm" :model="editItem" :rules="editItemRules" @submit.native.prevent>
+                <form-item label="项目" prop="id">
+                    <i-select v-model="editItem.id" @on-change="changeProject" filterable>
+                        <i-option v-for="proj in allProjects" :key="proj.id" :value="proj.id"
+                                  :label="proj.nameWithSpace"></i-option>
+                    </i-select>
+                </form-item>
+                <form-item label="开发人员" prop="developers">
+                    <i-select v-model="editItem.developers" multiple filterable>
+                        <i-option v-for="user in projectUsers"
+                                  :key="user.loginId"
+                                  :value="user.loginId"
+                                  :label="user.name"></i-option>
+                    </i-select>
+                </form-item>
+                <form-item label="目标分支" prop="targetBranch">
+                    <i-input v-model="editItem.targetBranch" placeholder="目标分支"></i-input>
+                </form-item>
+                <form-item label="标签" prop="labels">
+                    <i-select v-model="editItem.labels" multiple>
+                        <i-option v-for="label in projectLabels" :key="label" :value="label"
+                                  :label="label"></i-option>
+                    </i-select>
+                </form-item>
+            </i-form>
+        </Modal>
+    </template>
+    <script type="text/javascript">
+        Vue.component('project-modal', {
+            template: '#project-modal',
+            data() {
+                return {
+                    show: false,
+                    edit: false,
+                    loading: true,
+                    allProjects: [],
+                    projectUsers: [],
+                    projectLabels: [],
+                    editItem: {
+                        id: '',
+                        developers: [],
+                        targetBranch: 'develop',
+                        labels: []
+                    },
+                    editItemRules: {
+                        id: [
+                            {required: true, type: 'number', message: '项目不能为空'}
+                        ],
+                        developers: [
+                            {required: true, type: 'array', message: '开发人员不能为空'}
+                        ],
+                        targetBranch: [
+                            {required: true, message: '目标分支不能为空'}
+                        ]
+                    }
+                }
+            },
+            mounted() {
+                this.initProjects();
+            },
+            methods: {
+                open(item) {
+                    this.$refs.tableForm.resetFields();
+                    this.show = true;
+                    if(item){
+                        this.edit = true;
+                        this.editItem = {...item};
+                        this.changeProject(item.id);
+                    }
+                },
+                initProjects() {
+                    this.$http.get('/api/v1/gitlab/user/projects')
+                        .then(res => {
+                            if (Array.isArray(res.data)) {
+                                this.allProjects = res.data;
+                            }
+                        })
+                        .catch(err => {
+                            this.$notice.err(err.response.data);
+                        });
+                },
+                changeProject(val) {
+                    this.loadProjectUsers(val);
+                    this.loadProjectLabels(val);
+                },
+                loadProjectUsers(projId) {
+                    this.$http.get(`/api/v1/gitlab/projects/${projId}/users`)
+                        .then(res => {
+                            if (Array.isArray(res.data)) {
+                                this.projectUsers = res.data;
+                            }
+                        })
+                        .catch(err => {
+                            this.$notice.err(err.response.data);
+                        });
+                },
+                loadProjectLabels(projId) {
+                    this.$http.get(`/api/v1/gitlab/projects/${projId}/labels`)
+                        .then(res => {
+                            if (Array.isArray(res.data)) {
+                                this.projectLabels = res.data;
+                            }
+                        })
+                        .catch(err => {
+                            this.$notice.err(err.response.data);
+                        });
+                },
+                save() {
+                    this.$refs.tableForm.validate(valid => {
+                        if (valid) {
+                            this.$http.post('/api/v1/projects', {...this.editItem})
+                                .then(res => {
+                                    this.$notice.suc(res.data);
+                                    this.show = false;
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 2000);
+                                })
+                                .catch(err => {
+                                    this.$notice.err(err.response.data);
+                                    this.cancel();
+                                });
+                        } else {
+                            this.cancel();
+                        }
+                    });
+                },
+                cancel() {
+                    this.loading = false
+                    this.$nextTick(() => {
+                        this.loading = true
+                    })
+                }
+            }
+        })
+    </script>
+</div>
+</html>

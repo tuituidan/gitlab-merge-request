@@ -10,16 +10,11 @@ spring:
     password: 123456
   thymeleaf:
     cache: false
-  cache:
-    type: caffeine
+  jpa:
+    show-sql: true
 # gitlab服务地址
 gitlab:
   server: http://xxx.gitlab.com
 
 # 配置不走登录验证的页面
-non-require-login: /assets/**,/favicon.ico,/error/**,/login,/api/v1/login
-
-# mybatis 配置
-mybatis:
-  mapper-locations: classpath*:mapper/**/*.xml
-  base-packages: com.tuituidan.gmr.mybatis.mapper
+non-require-login: /assets/**,/favicon.ico,/error/**,/login,/api/v1/login/**

@@ -1,142 +1,131 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/head::common_head(~{::title})">
-    <title>首页</title>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>gitlab</title>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/lib/iview/iview.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/css/common.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/css/index.css}">
 </head>
 <body>
-<div class="wrapper">
-    <header th:replace="common/header::common_header"></header>
-    <aside  th:replace="common/menus::common_menus"></aside>
-    <div class="content-wrapper">
-        <div class="content-header">
-            <ul class="breadcrumb">
-                <li><a href="#"><i class="icon icon-home"></i></a></li>
-                <li class="active">首页</li>
-            </ul>
+<div v-cloak id="app">
+    <section class="admin-layout-container">
+        <div class="layout">
+            <Layout>
+                <Sider ref="sidebar" class="sidebar" hide-trigger collapsible width="230" :collapsed-width="78"
+                       v-model.trim="isCollapsed">
+                    <div class="logo">
+                        <div class="xfind-line" v-if="!isCollapsed">
+                            <div class="line-h"></div>
+                        </div>
+                        <div v-if="!isCollapsed" class="logo-saiqu">
+                            <Avatar icon="ios-person" size="large" th:src="${userInfo.avatarUrl}"></Avatar>
+                            <span class="user-name" th:text="${userInfo.name}"></span>
+                        </div>
+                        <Avatar icon="ios-person" size="large" v-else th:src="${userInfo.avatarUrl}"/>
+                    </div>
+                    <i-menu
+                            ref="side_menu"
+                            :active-name="activeMenuName"
+                            :open-names="openMenuName"
+                            theme="light"
+                            width="230px"
+                            :class="menuitemClasses"
+                            @on-select="choosedMenu"
+                            v-if="!isCollapsed">
+                        <template v-for="(menu,menu_index) in menus">
+                            <submenu :name="menu.name" v-if="menu.children" :key="menu_index">
+                                <template slot="title">
+                                    <Icon :size="20" :type="menu.icon"></Icon>
+                                    <span>{{menu.title}}</span>
+                                </template>
+                                <menu-item :name="child.name" v-for="(child ,child_index) in menu.children"
+                                           :key="child_index">
+                                    <Icon :size="20" :type="child.icon"></Icon>
+                                    <span>{{child.title}}</span>
+                                </menu-item>
+                            </submenu>
+                            <menu-item :name="menu.name" v-if="!menu.children" :key="menu_index">
+                                <Icon :size="20" :type="menu.icon" :key="menu_index"></Icon>
+                                <span>{{menu.title}}</span>
+                            </menu-item>
+                        </template>
+                    </i-menu>
+                    <div class="dropdown-wrap" v-if="isCollapsed">
+                        <div class="dw-content">
+                            <template v-for="(menu,menu_index) in menus">
+                                <Dropdown transfer placement="right-start" v-if="menu.children"
+                                          @on-click="dropdownClick" :key="menu_index">
+                                    <i-button class="dd-btn" type="text">
+                                        <Icon :size="25" :type="menu.icon"></Icon>
+                                    </i-button>
+                                    <dropdown-menu class="dd-menu" slot="list">
+                                        <template v-for="(child, i) in menu.children">
+                                            <dropdown-menu :name="child.name" :key="i">
+                                                <div class="ddi-wapper">
+                                                    <Icon :size="16" :type="child.icon"></Icon>
+                                                    <span class="ddi-text">
+                                                    {{ child.title }}
+                                                </span>
+                                                </div>
+                                            </dropdown-menu>
+                                        </template>
+                                    </dropdown-menu>
+                                </Dropdown>
+                                <Dropdown transfer v-if="!menu.children" placement="right-start"
+                                          @on-click="dropdownClick" :key="menu_index">
+                                    <i-button class="dd-btn" type="text">
+                                        <Icon :size="25" :type="menu.icon"></Icon>
+                                    </i-button>
+                                    <dropdown-menu class="dd-menu" slot="list">
+                                        <dropdown-menu :name="menu.name">
+                                            <div class="ddi-wapper">
+                                                <Icon :size="16" :type="menu.icon"></Icon>
+                                                <span class="ddi-text">
+                                                {{ menu.title }}
+                                            </span>
+                                            </div>
+                                        </dropdown-menu>
+                                    </dropdown-menu>
+                                </Dropdown>
+                            </template>
+                        </div>
+                    </div>
+                </Sider>
+                <Layout>
+                    <!-- :style="{width: isCollapsed?'calc(100% - 78px)':'calc(100% - 230px)'}" -->
+                    <i-header class="layout-header-bar">
+                        <div class="header-wapper">
+                            <div class="header-left">
+                                <Icon @click.native="collapsedSider" :class="rotateIcon" type="md-menu"
+                                      size="28"></Icon>
+                                <span class="header-title">gitlab合并请求统计</span>
+                            </div>
+                            <div class="header-right">
+                                <i-button type="text" icon="md-exit" class="btn-blue" size="large" @click="quit">退出系统
+                                </i-button>
+                            </div>
+                        </div>
+                    </i-header>
+                    <i-content class="main-content">
+                        <section class="master-page-container">
+                            <div th:utext="'<'+${page}+'><'+${page}+'>'"></div>
+                        </section>
+                    </i-content>
+                </Layout>
+            </Layout>
         </div>
-        <div class="content-body">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="info-box bg-info">
-                            <div class="info-box-icon">
-                                <i class="icon icon-file-text"></i>
-                            </div>
-                            <div class="info-box-content">
-                                <span class="info-box-text">文章总量</span>
-                                <span class="info-box-number">320
-                                        <small>篇</small>
-                                    </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="info-box bg-primary">
-                            <div class="info-box-icon">
-                                <i class="icon icon-user"></i>
-                            </div>
-                            <div class="info-box-content">
-                                <span class="info-box-text">用户总量</span>
-                                <span class="info-box-number">90
-                                        <small>个</small>
-                                    </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-icon">
-                                <i class="icon icon-bars"></i>
-                            </div>
-                            <div class="info-box-content">
-                                <span class="info-box-text">栏目总量</span>
-                                <span class="info-box-number">8
-                                        <small>个</small>
-                                    </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="info-box bg-danger">
-                            <div class="info-box-icon">
-                                <i class="icon icon-eye-open"></i>
-                            </div>
-                            <div class="info-box-content">
-                                <span class="info-box-text">PV总量</span>
-                                <span class="info-box-number">18953
-                                        <small>次</small>
-                                    </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="panel">
-                            <div class="panel-heading">
-                                <div class="panel-title">产品信息</div>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table table-info">
-                                    <tr>
-                                        <td>产品名称</td>
-                                        <td>zui-admin</td>
-                                    </tr>
-                                    <tr>
-                                        <td>核心框架</td>
-                                        <td>zui v1.7.0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>开发作者</td>
-                                        <td>mofee（莫非）</td>
-                                    </tr>
-                                    <tr>
-                                        <td>联系方式</td>
-                                        <td>QQ：205155513</td>
-                                    </tr>
-                                    <tr>
-                                        <td>交流讨论</td>
-                                        <td><a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=65deab2f8ea1e9d2445c3262d133da48fe9de53bd90a3146c3f7bb6fb9d63ead"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="zui-admin后台模板交流" title="zui-admin后台模板交流"></a></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="panel">
-                            <div class="panel-heading">
-                                <div class="panel-title">服务器信息</div>
-                            </div>
-                            <div class="panel-body">
-                                <table class="table table-info">
-                                    <tr>
-                                        <td>操作系统</td>
-                                        <td>Windows</td>
-                                    </tr>
-                                    <tr>
-                                        <td>运行环境</td>
-                                        <td>nginx/1.4.6</td>
-                                    </tr>
-                                    <tr>
-                                        <td>PHP版本</td>
-                                        <td>5.5.9-1ubuntu4.21</td>
-                                    </tr>
-                                    <tr>
-                                        <td>MYSQL版本</td>
-                                        <td>10.1.11-MariaDB-log</td>
-                                    </tr>
-                                    <tr>
-                                        <td>上传限制</td>
-                                        <td>20M</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 </div>
+<script type="text/javascript" th:src="@{/assets/lib/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/lib/iview/iview.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/lib/axios.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/vue-utils.js}"></script>
+<div th:replace="'pages/'+${page}::${page}"></div>
+<script type="text/javascript" th:inline="javascript">
+    const projects = /*[[${projects}]]*/ [];
+</script>
+<script type="text/javascript" th:src="@{/assets/js/index.js}"></script>
 </body>
 </html>
