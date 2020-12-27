@@ -42,8 +42,8 @@ public class MergeRequestController {
 
     @GetMapping("/discussion")
     public ResponseEntity<Void> discussion(@PathVariable Integer projectId,
-                                           @RequestParam Integer[] mergeIds) {
-        mergeRequestService.discussion(projectId, mergeIds);
+                                           @RequestParam Integer[] ids) {
+        mergeRequestService.discussion(projectId, ids);
         return ResponseEntity.ok().build();
     }
 }

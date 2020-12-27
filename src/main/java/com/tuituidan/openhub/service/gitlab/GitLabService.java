@@ -92,6 +92,15 @@ public class GitLabService {
         }
     }
 
+    public List<Diff> getCommitDiffs(Integer projectId, String commitSha) {
+        try {
+            return gitLabApi().getCommitsApi()
+                    .getDiff(projectId, commitSha);
+        } catch (GitLabApiException ex) {
+            throw new WrapperException("gitlab获取提交差异发生错误", ex);
+        }
+    }
+
     public List<Diff> getMergeRequestChanges(Integer projectId, Integer mergeId) {
         try {
             return gitLabApi().getMergeRequestApi()
