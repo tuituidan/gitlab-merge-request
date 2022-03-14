@@ -1,12 +1,13 @@
 package com.tuituidan.openhub.util;
 
+import com.tuituidan.openhub.bean.entity.Developer;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,6 +45,14 @@ public class RequestUtils {
             return PageRequest
                     .of(Integer.parseInt(pageIndex) - 1, Integer.parseInt(pageSize), Sort.Direction.fromString(direction),
                             sortBy);
+        }
+        return null;
+    }
+
+    public Developer getLoginInfo(){
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return (Developer) subject.getPrincipal();
         }
         return null;
     }

@@ -1,10 +1,9 @@
 package com.tuituidan.openhub.util;
 
 import com.tuituidan.openhub.exception.WrapperException;
-
 import java.beans.FeatureDescriptor;
 import java.util.Arrays;
-
+import java.util.Objects;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -47,6 +46,7 @@ public class BeanExtUtils {
         return target;
     }
 
+
     /**
      * 复制非空数据.
      *
@@ -55,9 +55,9 @@ public class BeanExtUtils {
      */
     public static void copyNotNullProperties(Object source, Object target) {
         final BeanWrapper src = new BeanWrapperImpl(source);
-        BeanUtils.copyProperties(source, target, Arrays.stream(src.getPropertyDescriptors())
-                .filter(pd -> src.getPropertyValue(pd.getName()) == null)
-                .map(FeatureDescriptor::getName).toArray(String[]::new));
+        BeanUtils.copyProperties(source, target, Arrays.stream(src.getPropertyDescriptors()).filter(item ->
+                Objects.isNull(item.getReadMethod()) || Objects.isNull(src.getPropertyValue(item.getName()))
+        ).map(FeatureDescriptor::getName).toArray(String[]::new));
     }
 
     private static <T> T newInstanceByCls(Class<T> cls) {

@@ -107,7 +107,7 @@
                 this.login_loading = true;
                 this.$refs.userForm.validate(valid => {
                     if (valid) {
-                        this.$http.post('/api/v1/login', {...this.userForm})
+                        this.$http.post('/login', {...this.userForm})
                             .then(() => {
                                 location.href = '/';
                             })

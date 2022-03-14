@@ -4,17 +4,19 @@ spring:
   application:
     name: gitlab-merge-request
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/db_gitlab
+    url: jdbc:postgresql://172.25.16.68:5432/db_gitlab
     driver-class-name: org.postgresql.Driver
-    username: root
-    password: 123456
+    username: sa
+    password: 6789@jkl
   thymeleaf:
     cache: false
   jpa:
     show-sql: true
 # gitlab服务地址
 gitlab:
-  server: http://xxx.gitlab.com
+  server: http://gitlab.thunisoft.com
 
 # 配置不走登录验证的页面
-non-require-login: /assets/**,/favicon.ico,/error/**,/login,/api/v1/login/**
+non-require-login: /assets/**,/favicon.ico,/error/**,/login
+shiro:
+  loginUrl: /login

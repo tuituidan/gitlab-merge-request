@@ -74,7 +74,7 @@ new Vue({
     // ------------------------------  菜单操作结束  --------------------------------
     methods: {
         quit() {
-            location.href = '/api/v1/login/out';
+            location.href = '/logout';
         },
         collapsedSider() {
             this.$refs.sidebar.toggleCollapse();

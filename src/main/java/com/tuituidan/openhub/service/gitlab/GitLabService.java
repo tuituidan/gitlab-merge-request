@@ -5,17 +5,14 @@ import com.tuituidan.openhub.bean.entity.Developer;
 import com.tuituidan.openhub.bean.vo.DeveloperVo;
 import com.tuituidan.openhub.bean.vo.ProjectVo;
 import com.tuituidan.openhub.exception.WrapperException;
-import com.tuituidan.openhub.util.RequestContextUtils;
-import com.tuituidan.openhub.util.StringExtUtils;
-
+import com.tuituidan.openhub.util.AesGcmUtils;
+import com.tuituidan.openhub.util.RequestUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab4j.api.Constants;
@@ -58,12 +55,10 @@ public class GitLabService {
     @Resource(name = "cache-gitlabapi")
     private Cache<String, GitLabApi> gitLabApiCache;
 
-
     /**
      * 每次请求数据的个数.
      */
     private static final int PAGE_SIZE = 50;
-
 
     public List<String> getLabels(Integer projectId) {
         try {
@@ -133,9 +128,8 @@ public class GitLabService {
         }
     }
 
-
     public List<ProjectVo> getUserProjects() {
-        String userId = RequestContextUtils.get().getId();
+        String userId = RequestUtils.getLoginInfo().getId();
         return gitlabUserProjects.get(userId, key -> {
             try {
                 return gitLabApi().getProjectApi().getMemberProjects().stream()
@@ -178,7 +172,6 @@ public class GitLabService {
         });
     }
 
-
     public List<User> getUser(Set<String> loginIds) {
         try {
             List<User> list = new ArrayList<>();
@@ -200,14 +193,15 @@ public class GitLabService {
     }
 
     private GitLabApi gitLabApi() {
-        Developer loginDto = RequestContextUtils.get();
+        Developer loginDto = RequestUtils.getLoginInfo();
         return gitLabApiCache.get(loginDto.getId(), key -> {
             try {
                 return GitLabApi.oauth2Login(gitlabServer, loginDto.getLoginId(),
-                        StringExtUtils.decodeBase64(loginDto.getPassword()));
+                        AesGcmUtils.decrypt(loginDto.getPassword()));
             } catch (Exception ex) {
                 throw new WrapperException("gitlab请求发生错误", ex);
             }
         });
     }
+
 }

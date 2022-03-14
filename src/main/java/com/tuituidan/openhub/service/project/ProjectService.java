@@ -10,17 +10,14 @@ import com.tuituidan.openhub.repository.ProjectRepository;
 import com.tuituidan.openhub.service.developer.DeveloperService;
 import com.tuituidan.openhub.service.gitlab.GitLabService;
 import com.tuituidan.openhub.util.BeanExtUtils;
-import com.tuituidan.openhub.util.RequestContextUtils;
-
+import com.tuituidan.openhub.util.RequestUtils;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -83,7 +80,7 @@ public class ProjectService {
      * @param projectDto projectDto
      */
     public String save(ProjectDto projectDto) {
-        Developer loginDto = RequestContextUtils.get();
+        Developer loginDto = RequestUtils.getLoginInfo();
         Project existsProj = projectRepository.findById(projectDto.getId()).orElse(null);
         if (existsProj != null) {
             Set<String> existUsers = new HashSet<>(Arrays.asList(existsProj.getDevelopers()));

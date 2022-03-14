@@ -5,12 +5,9 @@ import com.tuituidan.openhub.bean.entity.Developer;
 import com.tuituidan.openhub.bean.vo.ProjectVo;
 import com.tuituidan.openhub.consts.Consts;
 import com.tuituidan.openhub.service.developer.DeveloperService;
-import com.tuituidan.openhub.util.RequestContextUtils;
-
+import com.tuituidan.openhub.util.RequestUtils;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +38,7 @@ public class DeveloperController {
 
     @PatchMapping("/cache")
     public ResponseEntity<Void> cache() {
-        Developer developer = RequestContextUtils.get();
+        Developer developer = RequestUtils.getLoginInfo();
         localUserProjects.invalidate(developer.getLoginId());
         gitlabUserProjects.invalidate(developer.getId());
         localLoginIdDevelopers.invalidate(developer.getLoginId());

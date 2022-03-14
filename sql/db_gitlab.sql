@@ -5,7 +5,7 @@
 -- ----------------------------
 DROP TABLE IF EXISTS "db_gitlab"."t_developer";
 CREATE TABLE "db_gitlab"."t_developer" (
-  "c_id" char(32) NOT NULL,
+  "c_id" varchar(32) NOT NULL,
   "c_loginid" varchar(100),
   "c_name" varchar(100),
   "c_password" varchar(100),

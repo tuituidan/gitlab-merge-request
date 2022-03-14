@@ -10,8 +10,7 @@ import com.tuituidan.openhub.repository.ProjectRepository;
 import com.tuituidan.openhub.service.developer.DeveloperService;
 import com.tuituidan.openhub.service.gitlab.GitLabService;
 import com.tuituidan.openhub.util.BeanExtUtils;
-import com.tuituidan.openhub.util.CompletableUtils;
-
+import com.tuituidan.openhub.util.thread.CompletableUtils;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
 import javax.annotation.Resource;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
